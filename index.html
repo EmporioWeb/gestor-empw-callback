@@ -13,15 +13,16 @@
 </head>
 <body>
 <h2>Conectando ao Gestor EMPW…</h2>
-<p id="msg">Repassando a autorização do Mercado Livre para o seu computador.</p>
+<p id="msg">Repassando a autorização (Mercado Livre / Shopee) para o seu computador.</p>
 <p><a class="botao" id="continuar" href="#" hidden>Continuar</a></p>
 <script>
   // Página-ponte: o Mercado Livre não aceita redirecionar para "localhost",
   // então ele manda para cá e esta página repassa para o sistema no seu PC.
-  // Não guarda nada. O destino é fixo e só 4 parâmetros são repassados.
+  // A Shopee usa a mesma ponte. Não guarda nada. O destino é fixo e só os parâmetros da lista são repassados.
   (function () {
     var DESTINO = "http://localhost:8080/callback";
-    var PERMITIDOS = ["code", "state", "error", "error_description"];
+    // shop_id / main_account_id: a Shopee devolve a loja que autorizou junto com o code.
+    var PERMITIDOS = ["code", "state", "error", "error_description", "shop_id", "main_account_id"];
     var recebido = new URLSearchParams(window.location.search);
     var repassar = new URLSearchParams();
     PERMITIDOS.forEach(function (nome) {
@@ -29,7 +30,7 @@
     });
     var msg = document.getElementById("msg");
     if (!repassar.has("code") && !repassar.has("error")) {
-      msg.textContent = "Nenhuma autorização recebida. Inicie a conexão pelo arquivo \"Conectar conta ML.bat\".";
+      msg.textContent = "Nenhuma autorização recebida. Inicie a conexão pelo arquivo \"Conectar conta ML.bat\" ou \"Conectar loja Shopee.bat\".";
       return;
     }
     var url = DESTINO + "?" + repassar.toString();
